@@ -1,9 +1,11 @@
-#!/bin/bash -x
-#!/bin/bash -x
+##!/bin/bash -x
+
 declare -A coin
 declare -A coinPer
+
 totalFlips=200
 count=0
+
 while (( $count < totalFlips ))
 do
 coinFlip=$((RANDOM%4))
@@ -53,12 +55,26 @@ HTper=`awk "BEGIN {print (${coin[HT]}/$totalFlips)*100}"`
 THper=`awk "BEGIN {print (${coin[TH]}/$totalFlips)*100}"`
 TTper=`awk "BEGIN {print (${coin[TT]}/$totalFlips)*100}"`
 
-coinPer[HH]=[$HHper]
-coinPer[HT]=[$HTper]
-coinPer[TH]=[$THper]
-coinPer[TT]=[$TTper]
+coinPer[HH]=$HHper
+coinPer[HT]=$HTper
+coinPer[TH]=$THper
+coinPer[TT]=$TTper
 
 echo "HH Percentage: $HHper% "
 echo "HT Percentage: $HTper%"
 echo "TH Percentage: $THper%"
 echo "TT Percentage: $TTper%"
+echo "=============="
+
+
+arr=(`printf '%s\n' "${coinPer[@]}" | sort -n`)
+max=${arr[3]}
+
+for key in "${!coinPer[@]}"
+do
+	if [[ ${coinPer[$key]} == $max ]]
+	then
+		echo "Maximum Combinationa is: " "coinPer["$key"]" "Percentage is" $max
+	exit
+	fi
+done
