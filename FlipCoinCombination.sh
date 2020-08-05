@@ -1,39 +1,64 @@
 #!/bin/bash -x
-
+#!/bin/bash -x
 declare -A coin
-
-totalFlip=200
+declare -A coinPer
+totalFlips=200
 count=0
-while (( $count < totalFlip ))
+while (( $count < totalFlips ))
 do
-coinFlip=$((RANDOM%2))
+coinFlip=$((RANDOM%4))
 
-   if [[ $coinFlip -eq 1 ]]
+case $coinFlip in
+0) echo "HH"
+        if [ -z "${coin[HH]}" ]
    then
-      echo "Heads"
-      if [ -z "${coin[H]}" ]
-      then
-      coin[H]=1
-      else
-      coin[H]=$((${coin[H]}+1))
-      fi
+      coin[HH]=1
    else
-      echo "Tails"
-      if [ -z "${coin[T]}" ]
-      then
-      coin[T]=1
-      else
-      coin[T]=$((${coin[T]}+1))
+      coin[HH]=$((${coin[HH]}+1))
    fi
-fi
+;;
+1) echo "HT"
+        if [ -z "${coin[HT]}" ]
+   then
+        coin[HT]=1
+   else
+      coin[HT]=$((${coin[HT]}+1))
+   fi
+;;
+2) echo "TH"
+        if [ -z "${coin[TH]}" ]
+   then
+      coin[TH]=1
+   else
+      coin[TH]=$((${coin[TH]}+1))
+   fi
+;;
+3) echo "TT"
+        if [ -z "${coin[TT]}" ]
+   then
+      coin[TT]=1
+   else
+      coin[TT]=$((${coin[TT]}+1))
+   fi
+;;
+esac
 ((count++))
 done
 
-echo "H/T: "${!coin[@]}
+echo "HH/HT/TH/TT: "${!coin[@]}
 echo "Value: "${coin[@]}
 
-Hper=`awk "BEGIN {print (${coin[H]}/$totalFlip)*100}"`
-Tper=`awk "BEGIN {print (${coin[T]}/$totalFlip)*100}"`
-echo "Head Percentage: $Hper% "
-echo "Tail Percentage: $Tper%"
+HHper=`awk "BEGIN {print (${coin[HH]}/$totalFlips)*100}"`
+HTper=`awk "BEGIN {print (${coin[HT]}/$totalFlips)*100}"`
+THper=`awk "BEGIN {print (${coin[TH]}/$totalFlips)*100}"`
+TTper=`awk "BEGIN {print (${coin[TT]}/$totalFlips)*100}"`
 
+coinPer[HH]=[$HHper]
+coinPer[HT]=[$HTper]
+coinPer[TH]=[$THper]
+coinPer[TT]=[$TTper]
+
+echo "HH Percentage: $HHper% "
+echo "HT Percentage: $HTper%"
+echo "TH Percentage: $THper%"
+echo "TT Percentage: $TTper%"
